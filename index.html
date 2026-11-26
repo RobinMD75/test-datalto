@@ -1,89 +1,169 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Diagnostic DAB — Restitution</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CCI 92 – Tableau de bord</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    body, html { margin: 0; padding: 0; height: 100%; font-family: Arial, sans-serif; background-color: #f4f6f9; }
-    
-    /* Écran de verrouillage */
-    #login-box {
-      max-width: 420px;
-      margin: 120px auto;
-      padding: 30px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      text-align: center;
+    :root {
+      --bleu: #12356b;
+      --bleu-fonce: #0b2447;
+      --accent: #e3a21a;
+      --texte: #1d2433;
+      --texte-doux: #4b5565;
+      --fond: #f5f7fa;
+      --blanc: #ffffff;
+      --bordure: #dbe1ea;
     }
-    #login-box h2 { margin-top: 0; color: #0044ff; }
-    input[type="password"] {
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--texte);
+      background: var(--fond);
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      line-height: 1.55;
+    }
+
+    /* Bandeau */
+    .bandeau {
+      background: var(--bleu-fonce);
+      color: var(--blanc);
+      border-bottom: 4px solid var(--accent);
+    }
+    .bandeau__inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .marque {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: inherit;
+    }
+    .marque__sigle {
+      font-weight: 800;
+      font-size: 1.5rem;
+      letter-spacing: 0.01em;
+    }
+    .marque__nom {
+      font-size: 0.9rem;
+      color: #c9d4e8;
+    }
+    .bandeau a.lien {
+      color: var(--blanc);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 1px;
+    }
+    .bandeau a.lien:hover { color: var(--accent); }
+
+    /* Présentation */
+    .intro {
+      background: var(--blanc);
+      border-bottom: 1px solid var(--bordure);
+    }
+    .intro__inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.75rem 1.5rem;
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      gap: 2rem 3rem;
+      align-items: start;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+      line-height: 1.15;
+      font-weight: 800;
+      color: var(--bleu);
+      letter-spacing: -0.01em;
+    }
+    .intro p {
+      color: var(--texte-doux);
+      max-width: 68ch;
+      font-size: 1rem;
+    }
+    .intro p + p { margin-top: 0.6rem; }
+
+    /* Rapport Power BI */
+    .rapport {
+      flex: 1 1 auto;
+      display: flex;
+      min-height: 640px;
+      background: var(--fond);
+    }
+    .rapport iframe {
+      flex: 1 1 auto;
       width: 100%;
-      padding: 12px;
-      margin: 15px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
+      border: 0;
+      display: block;
     }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #0044ff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 15px;
-      cursor: pointer;
-      font-weight: bold;
+
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
     }
-    button:hover { background-color: #0033cc; }
-    
-    /* Conteneur Power BI */
-    #content { display: none; width: 100%; height: 100vh; }
-    iframe { width: 100%; height: 100%; border: none; }
+
+    @media (max-width: 800px) {
+      .intro__inner { grid-template-columns: 1fr; padding: 1.25rem 1rem; gap: 0.9rem; }
+      .bandeau__inner { padding: 0.65rem 1rem; }
+      .marque__nom { display: none; }
+      .rapport { min-height: 75dvh; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Formulaire d'accès -->
-  <div id="login-box">
-    <h2>Diagnostic Flash DAB</h2>
-    <p>Accès restreint — Veuillez saisir votre code d'accès :</p>
-    <input type="password" id="passInput" placeholder="Mot de passe">
-    <button onclick="validerCode()">Accéder au rapport</button>
-  </div>
+  <header class="bandeau">
+    <div class="bandeau__inner">
+      <a class="marque" href="#" aria-label="CCI 92, accueil">
+        <span class="marque__sigle">CCI 92</span>
+        <span class="marque__nom">Chambre de commerce et d’industrie des Hauts-de-Seine</span>
+      </a>
+      <a class="lien" href="https://www.cci92.fr" target="_blank" rel="noopener">Site de la CCI 92</a>
+    </div>
+  </header>
 
-  <!-- Rapport Power BI -->
-  <div id="content">
-    <iframe 
-      id="pbiFrame"
-      src="https://app.powerbi.com/reportEmbed?reportId=80074225-c172-4846-bb34-f1e6be0c164c&autoAuth=true&ctid=07f2d2f9-b1c9-47e8-b00c-a5903cc61e74" 
-      allowFullScreen="true">
-    </iframe>
-  </div>
+  <section class="intro">
+    <div class="intro__inner">
+      <h1>Le territoire des Hauts-de-Seine en données</h1>
+      <div>
+        <p>
+          Ce tableau de bord interactif rassemble les indicateurs clés suivis par la CCI 92
+          pour éclairer la vie économique du département.
+        </p>
+        <p>
+          Utilisez les filtres et les onglets du rapport ci-dessous pour affiner la vue
+          selon votre activité, votre commune ou la période qui vous intéresse.
+        </p>
+      </div>
+    </div>
+  </section>
 
-  <script>
-    function validerCode() {
-      // Définissez ici le mot de passe d'accès
-      var codeSecret = "CCI92-ISSY"; 
-      var saisie = document.getElementById("passInput").value;
-      
-      if (saisie === codeSecret) {
-        document.getElementById("login-box").style.display = "none";
-        document.getElementById("content").style.display = "block";
-      } else {
-        alert("Mot de passe incorrect.");
-      }
-    }
-    
-    // Validation avec la touche Entrée
-    document.getElementById("passInput").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") { validerCode(); }
-    });
-  </script>
+  <main class="rapport">
+    <iframe
+      title="Tableau de bord Power BI – CCI 92"
+      src="https://app.powerbi.com/reportEmbed?reportId=3af93e5e-e879-4132-8c0e-7bb73e62e919&autoAuth=true&ctid=07f2d2f9-b1c9-47e8-b00c-a5903cc61e74"
+      allowfullscreen="true"
+      loading="lazy"></iframe>
+  </main>
 
 </body>
 </html>
